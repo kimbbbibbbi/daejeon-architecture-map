@@ -47,6 +47,8 @@ button, input, select { font: inherit; color: inherit; }
 .mapview { position: fixed; inset: 0; }
 .mapview .map { position: absolute; inset: 0; }
 .view.frame { padding-top: calc(var(--bar-bottom, 90px) + 20px); }
+/* 문서 화면에서는 상단 바 위·옆 틈으로 본문이 비치지 않게 흰 띠를 깐다 */
+body.doc-view::before { content: ""; position: fixed; inset: 0 0 auto; height: var(--bar-bottom, 90px); background: var(--white); z-index: 1250; }
 .leaflet-container { background: var(--map-out); font-family: var(--font-body); }
 .basemap { filter: grayscale(0.55) contrast(0.9) brightness(1.06); }
 .topbar {
@@ -191,16 +193,6 @@ button, input, select { font: inherit; color: inherit; }
   padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 12px 0;
 }
-.mast { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--ink); }
-.mast .brand { font-size: clamp(30px, 5.2vw, 48px); }
-.util { display: flex; gap: 14px; font-family: var(--font-display); font-size: 14px; padding-bottom: 4px; }
-.util a { text-decoration: none; }
-.row { display: flex; align-items: center; gap: 28px; padding: 8px 0; border-bottom: 1px solid var(--ink); font-family: var(--font-display); font-size: 23px; overflow-x: auto; scrollbar-width: none; }
-.row::-webkit-scrollbar { display: none; }
-.row a { text-decoration: none; white-space: nowrap; }
-.row a:hover { color: var(--ink-3); }
-.row a[aria-current="page"] { color: #9a9a9a; }
-.row .push { margin-left: auto; }
 .content { padding-block: 32px 72px; }
 h1, h2, h3 { text-wrap: balance; }
 .page-title { font-family: var(--font-display); font-weight: 400; font-size: 26px; margin: 0 0 4px; }
@@ -240,11 +232,10 @@ td .alt { display: block; color: var(--ink-3); }
 .links .go { font-family: var(--font-display); color: var(--ink-3); }
 
 footer.site {
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; gap: 24px;
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px;
   padding-block: 40px 28px; font-size: 11px; line-height: 1.7; color: var(--ink);
   font-family: Arial, var(--font-body);
 }
-footer.site .end { text-align: right; display: grid; align-content: end; gap: 2px; }
 
 /* ================= 상세 창 ================= */
 .detail {
@@ -309,10 +300,8 @@ dl.facts dt { font-weight: 700; }
   .panel-head { touch-action: none; }
   .mapview .leaflet-control-zoom { display: none; }
 
-  .row { font-size: 18px; gap: 18px; }
   .d-grid, .d-bottom { grid-template-columns: 1fr; }
   footer.site { grid-template-columns: 1fr 1fr; }
-  footer.site .end { text-align: left; }
   .src div { grid-template-columns: 1fr; gap: 0; }
   .hc { grid-template-columns: 72px 190px; }
   .hc .thumb { width: 72px; height: 72px; }
@@ -364,7 +353,6 @@ dl.facts dt { font-weight: 700; }
     <div>문의: 대전건축여지도 제작팀<br>건축자산 정보 정정 요청은 소개 페이지의 출처 기관으로 문의해 주세요.<br><br>© 대전건축여지도</div>
     <div>대전건축여지도<br>기획 · 제작: 서광일<br>디지털인문학 프로젝트</div>
     <div>데이터: 대전광역시 근현대 건축문화유산 전수조사<br>지도: OpenStreetMap · Leaflet<br>사진: 국가유산포털 · 공공누리</div>
-    <div class="end"><a class="u" href="#about">대전건축여지도 소개</a><a class="u" href="#links">관련 사이트</a></div>
   </footer>
 </template>
 
@@ -716,7 +704,7 @@ window.RIVERS = /*RIVERS*/;
       </div>
       <div class="frame"><div data-slot="footer"></div></div>`;
     detailEl.querySelector('[data-slot="footer"]').replaceWith(document.getElementById("footer").content.cloneNode(true));
-    detailEl.hidden = false; detailEl.scrollTop = 0;
+    detailEl.hidden = false; detailEl.scrollTop = 0; document.body.classList.add("doc-view");
     document.body.style.overflow = "hidden";
     if (detailMap) { maps.splice(maps.indexOf(detailMap), 1); detailMap.remove(); }
     detailMap = baseMap("map-detail", { scrollWheelZoom: false });
@@ -774,6 +762,7 @@ window.RIVERS = /*RIVERS*/;
   function show(view) {
     document.querySelectorAll(".view").forEach(v => v.hidden = v.id !== "view-" + view);
     filtersEl.hidden = view !== "map";
+    document.body.classList.toggle("doc-view", !["map", "routes"].includes(view));
     placePanels();
     if (view === "map") {
       if (!mainMap) { placePanels(); initMainMap(); } else { placePanels(); mainMap.invalidateSize(); }
