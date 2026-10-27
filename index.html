@@ -1052,9 +1052,6 @@ dl.facts dt { font-weight: 700; }
     <a class="brand" href="#map">대전건축여지도</a>
     <nav class="util"><a href="#about">About</a><a href="#links">Links</a></nav>
   </div>
-  <nav class="row" aria-label="시대별 보기">
-    <a href="#era-joseon" data-nav="era-joseon">조선</a><a href="#era-colonial" data-nav="era-colonial">일제강점기</a><a href="#era-postwar" data-nav="era-postwar">1950~70년대</a><a href="#era-recent" data-nav="era-recent">1980년대 이후</a>
-  </nav>
   <nav class="row" aria-label="주 메뉴">
     <a href="#map" data-nav="map">Map</a><a href="#list" data-nav="list">List</a><a href="#routes" data-nav="routes">Route</a><a href="#about" data-nav="about">About</a><a href="#links" data-nav="links">Links</a>
   </nav>
@@ -1411,7 +1408,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
   [lq, lgu, luse].forEach(el => el.addEventListener("input", renderTable));
   lera.addEventListener("input", () => {
     const h = Object.keys(ERA_HASH).find(k => ERA_HASH[k] === lera.value);
-    history.replaceState(null, "", "#" + (h || "list")); syncNav(h || "list"); renderTable();
+    history.replaceState(null, "", "#" + (h || "list")); syncNav("list"); renderTable();
   });
   document.getElementById("sort-year").addEventListener("click", () => { sortDir = sortDir === 0 ? 1 : sortDir === 1 ? -1 : 0; renderTable(); });
   document.getElementById("list-body").addEventListener("click", e => { const tr = e.target.closest("tr[data-id]"); if (tr && !e.target.closest("a")) location.hash = tr.dataset.id; });
@@ -1541,7 +1538,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
     else if (h === "list") lera.value = "";
     if (!VIEWS.includes(view)) view = "map";
     lastView = view;
-    syncNav(ERA_HASH[h] ? h : view);
+    syncNav(view);
     show(view);
   }
   renderFilters();
