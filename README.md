@@ -39,4 +39,4 @@ OpenStreetMap 배경 지도가 회색조로 자동 표시됩니다.
 - 배경 지도: © OpenStreetMap contributors
 - 라이브러리: Leaflet, Leaflet.markercluster
 
-기획 · 제작: 서광일 (언론정보학과), 2026
+기획 · 제작: 서광일 · 디지털인문학 프로젝트
