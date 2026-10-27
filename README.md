@@ -26,17 +26,17 @@ UI는 오픈하우스서울(ohseoul.org) 지도 페이지를 참고했습니다.
 
 ## 빌드
 ```bash
-python3 build.py && cp dist/index.html index.html
+python3 build.py
 ```
 
 ## 배포
 `index.html` 한 파일이면 됩니다. GitHub Pages(Settings → Pages → main 브랜치 / root)로 켜면
-회색조 배경 지도 타일(CARTO Positron)이 자동으로 함께 표시됩니다.
+OpenStreetMap 배경 지도가 회색조로 자동 표시됩니다.
 
 ## 출처
 - 건축물 좌표 · 하천: © OpenStreetMap contributors (ODbL)
 - 행정구역 경계: 통계청, southkorea-maps
-- 배경 지도: © OpenStreetMap © CARTO
+- 배경 지도: © OpenStreetMap contributors
 - 라이브러리: Leaflet, Leaflet.markercluster
 
 기획 · 제작: 서광일 (언론정보학과), 2026

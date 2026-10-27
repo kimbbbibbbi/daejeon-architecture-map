@@ -1,3 +1,11 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
 <title>대전건축여지도</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1219,18 +1227,18 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
     if (tilesOk) addTiles(m);
     return m;
   }
-  // 직접 호스팅하면 회색조 배경 타일(CARTO Positron)을 깔고, 외부 이미지가 막힌 곳에서는 자체 벡터 지도만 쓴다.
-  const TILE = "https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png";
+  // 직접 호스팅하면 OpenStreetMap 배경 타일을 회색조로 깔고, 외부 이미지가 막힌 곳에서는 자체 벡터 지도만 쓴다.
+  const TILE = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
   function addTiles(m) {
     if (m._dj.tiles) return;
-    m._dj.tiles = L.tileLayer(TILE, { maxZoom: 19, subdomains: "abcd",
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © <a href="https://carto.com/attributions">CARTO</a>' }).addTo(m);
-    m._dj.tiles.getContainer().style.filter = "grayscale(1)";
+    m._dj.tiles = L.tileLayer(TILE, { maxZoom: 19,
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(m);
+    m._dj.tiles.getContainer().style.filter = "grayscale(1) contrast(0.82) brightness(1.1)";
     m.removeLayer(m._dj.gu); m.removeLayer(m._dj.river); m.removeLayer(m._dj.labels);
   }
   const probe = new Image();
   probe.onload = () => { tilesOk = true; maps.forEach(addTiles); };
-  probe.src = "https://a.basemaps.cartocdn.com/light_all/11/1747/797.png";
+  probe.src = "https://tile.openstreetmap.org/11/1747/797.png";
 
   const PIN_SVG = '<svg viewBox="0 0 26 34" aria-hidden="true"><path d="M13 0C5.8 0 0 5.6 0 12.6 0 22 13 34 13 34s13-12 13-21.4C26 5.6 20.2 0 13 0z"/><circle cx="13" cy="12.5" r="4" fill="#fff"/></svg>';
   const pinIcon = () => L.divIcon({ className: "", html: `<div class="pin">${PIN_SVG}</div>`, iconSize: [26, 34], iconAnchor: [13, 34], tooltipAnchor: [14, -22], popupAnchor: [0, -34] });
@@ -1543,3 +1551,6 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
   route();
 })();
 </script>
+
+</body>
+</html>
