@@ -729,10 +729,11 @@ button, input, select { font: inherit; color: inherit; }
 /* ================= 떠 있는 상단 바 (지도 · 동선) ================= */
 .mapview { position: fixed; inset: 0; }
 .mapview .map { position: absolute; inset: 0; }
+.view.frame { padding-top: calc(var(--bar-bottom, 90px) + 20px); }
 .leaflet-container { background: var(--map-out); font-family: var(--font-body); }
 .basemap { filter: grayscale(0.55) contrast(0.9) brightness(1.06); }
 .topbar {
-  position: absolute; z-index: 800;
+  position: fixed; z-index: 1300;
   top: calc(var(--gap) + env(safe-area-inset-top, 0px));
   left: max(var(--gap), env(safe-area-inset-left, 0px));
   right: max(var(--gap), env(safe-area-inset-right, 0px));
@@ -930,7 +931,7 @@ footer.site .end { text-align: right; display: grid; align-content: end; gap: 2p
 
 /* ================= 상세 창 ================= */
 .detail {
-  position: fixed; inset: 0; z-index: 1200; background: var(--white);
+  position: fixed; inset: var(--bar-bottom, 90px) 0 0; z-index: 1200; background: var(--white);
   overflow-y: auto; overscroll-behavior: contain;
   padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px);
 }
@@ -1003,22 +1004,24 @@ dl.facts dt { font-weight: 700; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
+<!-- ===== 모든 화면 공통 상단 바 (메뉴 위치 고정) ===== -->
+<header class="topbar" id="topbar">
+  <div class="topbar-main">
+    <a class="brand" href="#map">대전건축여지도</a>
+    <nav class="menu" aria-label="주 메뉴">
+      <a href="#map" data-nav="map">Map</a><a href="#list" data-nav="list">List</a><a href="#routes" data-nav="routes">Route</a><a href="#about" data-nav="about">About</a><a href="#links" data-nav="links">Links</a>
+    </nav>
+    <label class="search">
+      <input id="q" type="search" placeholder="Search" autocomplete="off" aria-label="건축물 이름, 주소 검색">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5.25" stroke="currentColor" stroke-width="1.3"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.3"/></svg>
+    </label>
+  </div>
+  <div class="topbar-filters" id="filters" hidden></div>
+</header>
+
 <!-- ===== 1. 지도 (홈) ===== -->
 <section class="view mapview" id="view-map">
   <div class="map" id="map-main" role="region" aria-label="대전 건축자산 지도"></div>
-  <header class="topbar" id="topbar-map">
-    <div class="topbar-main">
-      <a class="brand" href="#map">대전건축여지도</a>
-      <nav class="menu" aria-label="주 메뉴">
-        <a href="#map" data-nav="map">Map</a><a href="#list" data-nav="list">List</a><a href="#routes" data-nav="routes">Route</a><a href="#about" data-nav="about">About</a><a href="#links" data-nav="links">Links</a>
-      </nav>
-      <label class="search">
-        <input id="q" type="search" placeholder="Search" autocomplete="off" aria-label="건축물 이름, 주소 검색">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><circle cx="7" cy="7" r="5.25" stroke="currentColor" stroke-width="1.3"/><path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.3"/></svg>
-      </label>
-    </div>
-    <div class="topbar-filters" id="filters"></div>
-  </header>
   <aside class="panel" id="panel-map" aria-label="건축자산 목록">
     <button type="button" class="sheet-handle" aria-label="목록 펼치기 / 접기"></button>
     <div class="panel-head"><h2>Archive</h2><span class="meta" id="count"></span></div>
@@ -1030,14 +1033,6 @@ dl.facts dt { font-weight: 700; }
 <!-- ===== 4. 추천 동선 ===== -->
 <section class="view mapview" id="view-routes" hidden>
   <div class="map" id="map-route" role="region" aria-label="추천 동선 지도"></div>
-  <header class="topbar" id="topbar-routes">
-    <div class="topbar-main">
-      <a class="brand" href="#map">대전건축여지도</a>
-      <nav class="menu" aria-label="주 메뉴">
-        <a href="#map" data-nav="map">Map</a><a href="#list" data-nav="list">List</a><a href="#routes" data-nav="routes">Route</a><a href="#about" data-nav="about">About</a><a href="#links" data-nav="links">Links</a>
-      </nav>
-    </div>
-  </header>
   <aside class="panel" id="panel-route" aria-label="추천 동선">
     <button type="button" class="sheet-handle" aria-label="동선 펼치기 / 접기"></button>
     <div class="panel-head"><h2>Route</h2><span class="meta">권역별 추천 동선</span></div>
@@ -1047,16 +1042,6 @@ dl.facts dt { font-weight: 700; }
   </aside>
 </section>
 
-<!-- ===== 문서형 페이지 공통 머리 ===== -->
-<template id="masthead">
-  <div class="mast">
-    <a class="brand" href="#map">대전건축여지도</a>
-    <nav class="util"><a href="#about">About</a><a href="#links">Links</a></nav>
-  </div>
-  <nav class="row" aria-label="주 메뉴">
-    <a href="#map" data-nav="map">Map</a><a href="#list" data-nav="list">List</a><a href="#routes" data-nav="routes">Route</a><a href="#about" data-nav="about">About</a><a href="#links" data-nav="links">Links</a>
-  </nav>
-</template>
 <template id="footer">
   <footer class="site">
     <div>문의: 대전건축여지도 제작팀<br>건축자산 정보 정정 요청은 소개 페이지의 출처 기관으로 문의해 주세요.<br><br>© 대전건축여지도</div>
@@ -1068,7 +1053,6 @@ dl.facts dt { font-weight: 700; }
 
 <!-- ===== 2. 전체목록 ===== -->
 <section class="view frame" id="view-list" hidden>
-  <div data-slot="masthead"></div>
   <div class="content">
     <h1 class="page-title" id="list-title">List</h1>
     <p class="small" id="list-count"></p>
@@ -1090,7 +1074,6 @@ dl.facts dt { font-weight: 700; }
 
 <!-- ===== 5. 소개 ===== -->
 <section class="view frame" id="view-about" hidden>
-  <div data-slot="masthead"></div>
   <div class="content">
     <h1 class="page-title">About</h1>
     <div class="prose" style="margin-top:16px">
@@ -1116,7 +1099,6 @@ dl.facts dt { font-weight: 700; }
 
 <!-- ===== 6. 관련 사이트 ===== -->
 <section class="view frame" id="view-links" hidden>
-  <div data-slot="masthead"></div>
   <div class="content">
     <h1 class="page-title">Links</h1>
     <ul class="links">
@@ -1221,7 +1203,6 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
   const thumb = b => `<div class="thumb" aria-hidden="true"><b>No. ${no(b)}</b><span>${b.year ?? "—"}</span></div>`;
 
   // 문서형 페이지에 공통 머리·꼬리 채우기
-  document.querySelectorAll('[data-slot="masthead"]').forEach(el => el.replaceWith(document.getElementById("masthead").content.cloneNode(true)));
   document.querySelectorAll('[data-slot="footer"]').forEach(el => el.replaceWith(document.getElementById("footer").content.cloneNode(true)));
 
   // ---------- 지도 공통 ----------
@@ -1303,7 +1284,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
   }
   // 지도에서 떠 있는 패널·상단 바에 가리지 않는 영역에 맞춘다.
   function padOpts() {
-    const top = document.getElementById("topbar-map").getBoundingClientRect().bottom + 24;
+    const top = document.getElementById("topbar").getBoundingClientRect().bottom + 24;
     return mobile() ? { paddingTopLeft: [20, top], paddingBottomRight: [20, 160] } : { paddingTopLeft: [420, top], paddingBottomRight: [40, 40] };
   }
   function fitTo(list, animate) {
@@ -1339,7 +1320,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
   cardsEl.addEventListener("mouseover", e => { const li = e.target.closest(".card"); if (li) mark(li.dataset.id, "is-hover", true); });
   cardsEl.addEventListener("mouseout", e => { const li = e.target.closest(".card"); if (li) mark(li.dataset.id, "is-hover", false); });
   let qTimer;
-  document.getElementById("q").addEventListener("input", e => { clearTimeout(qTimer); qTimer = setTimeout(() => { st.q = e.target.value.trim(); applyFilters(true); }, 200); });
+  document.getElementById("q").addEventListener("input", e => { if (lastView !== "map" || !detailEl.hidden) location.hash = "map"; clearTimeout(qTimer); qTimer = setTimeout(() => { st.q = e.target.value.trim(); applyFilters(true); }, 200); });
 
   function mark(id, cls, on) {
     markers[id]?.getElement()?.querySelector(".pin")?.classList.toggle(cls, on);
@@ -1401,11 +1382,11 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
   setSheet("peek");
 
   // 데스크톱 패널은 상단 바 바로 아래에서 시작
+  // 상단 바 높이(필터 줄 유무에 따라 다름)를 패널 · 문서 · 상세 창 위치에 반영
   function placePanels() {
-    [["topbar-map", "panel-map"], ["topbar-routes", "panel-route"]].forEach(([t, p]) => {
-      const bar = document.getElementById(t), panel = document.getElementById(p);
-      if (bar.offsetParent) panel.style.setProperty("--panel-top", bar.offsetTop + bar.offsetHeight + 12 + "px");
-    });
+    const bottom = document.getElementById("topbar").getBoundingClientRect().bottom;
+    document.documentElement.style.setProperty("--bar-bottom", bottom + "px");
+    ["panel-map", "panel-route"].forEach(id => document.getElementById(id).style.setProperty("--panel-top", bottom + 12 + "px"));
   }
   addEventListener("resize", () => { placePanels(); maps.forEach(m => m.invalidateSize()); });
 
@@ -1444,7 +1425,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
     const routes = R.filter(r => r.stops.includes(id));
     detailEl.innerHTML = `
       <div class="frame">
-        <div class="detail-bar"><a href="#${lastView}" class="u">← ${lastView === "map" ? "Map" : lastView === "routes" ? "Route" : "List"}</a><button type="button" id="d-close" aria-label="닫기">Close ✕</button></div>
+        <div class="detail-bar"><a href="#${lastView}" class="u">← ${{ map: "Map", list: "List", routes: "Route", about: "About", links: "Links" }[lastView]}</a><button type="button" id="d-close" aria-label="닫기">Close ✕</button></div>
         <div class="d-grid">
           <div>
             <p class="d-cat"><span class="k">${esc(b.era)} · ${esc(b.use)}</span><br><span id="d-title" style="font-size:17px">${esc(b.name)}</span>${b.alt ? `<br>${esc(b.alt)}` : ""}</p>
@@ -1518,7 +1499,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
         .bindPopup(popupHtml(b), { maxWidth: 320 }))
     ]).addTo(routeMap);
     routeMap.invalidateSize();
-    const top = document.getElementById("topbar-routes").getBoundingClientRect().bottom + 24;
+    const top = document.getElementById("topbar").getBoundingClientRect().bottom + 24;
     routeMap.fitBounds(L.latLngBounds(pts), { ...(mobile() ? { paddingTopLeft: [30, top], paddingBottomRight: [30, 170] } : { paddingTopLeft: [440, top], paddingBottomRight: [60, 60] }), maxZoom: 16 });
   }
   document.getElementById("route-tabs").addEventListener("click", e => { const c = e.target.closest("[data-r]"); if (c) { curRoute = c.dataset.r; renderRoute(); } });
@@ -1540,6 +1521,8 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
   }
   function show(view) {
     document.querySelectorAll(".view").forEach(v => v.hidden = v.id !== "view-" + view);
+    filtersEl.hidden = view !== "map";
+    placePanels();
     if (view === "map") {
       if (!mainMap) { placePanels(); initMainMap(); } else { placePanels(); mainMap.invalidateSize(); }
       if (pendingFocus) { const id = pendingFocus; pendingFocus = null; setTimeout(() => select(id, true), 80); }
