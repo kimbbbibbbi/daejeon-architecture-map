@@ -47,6 +47,7 @@ button, input, select { font: inherit; color: inherit; }
 .mapview { position: fixed; inset: 0; }
 .mapview .map { position: absolute; inset: 0; }
 .leaflet-container { background: var(--map-out); font-family: var(--font-body); }
+.basemap { filter: grayscale(0.55) contrast(0.9) brightness(1.06); }
 .topbar {
   position: absolute; z-index: 800;
   top: calc(var(--gap) + env(safe-area-inset-top, 0px));
@@ -339,7 +340,7 @@ dl.facts dt { font-weight: 700; }
     <button type="button" class="sheet-handle" aria-label="목록 펼치기 / 접기"></button>
     <div class="panel-head"><h2>Archive</h2><span class="meta" id="count"></span></div>
     <ul class="cards" id="cards"></ul>
-    <p class="sample-note">샘플 15건 · 전수조사 308건 데이터 반영 예정</p>
+    <p class="sample-note">샘플 25건 · 전수조사 308건 데이터 반영 예정</p>
   </aside>
 </section>
 
@@ -420,7 +421,7 @@ dl.facts dt { font-weight: 700; }
     </div>
     <h2 class="page-title" style="font-size:20px">Data</h2>
     <div class="src">
-      <div><b>건축자산 목록</b><span>대전광역시 고시공고, 근현대 건축문화유산 전수조사 결과 공고문 (반영 예정, 현재 샘플 15건)</span></div>
+      <div><b>건축자산 목록</b><span>대전광역시 고시공고, 근현대 건축문화유산 전수조사 결과 공고문 (반영 예정, 현재 샘플 25건)</span></div>
       <div><b>사진 · 역사 개요</b><span>국가유산포털(heritage.go.kr), 공공누리 개방 저작물 (반영 예정)</span></div>
       <div><b>건축물 좌표 · 하천</b><span>© OpenStreetMap contributors (ODbL)</span></div>
       <div><b>행정구역 경계</b><span>통계청 2013 행정구역 경계, southkorea-maps 가공본</span></div>
@@ -501,9 +502,9 @@ window.RIVERS = /*RIVERS*/;
   const TILE = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
   function addTiles(m) {
     if (m._dj.tiles) return;
-    m._dj.tiles = L.tileLayer(TILE, { maxZoom: 19,
+    // 지도에 아직 위치가 없으면 타일 컨테이너가 늦게 생기므로 필터는 className + CSS로 건다
+    m._dj.tiles = L.tileLayer(TILE, { maxZoom: 19, className: "basemap",
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(m);
-    m._dj.tiles.getContainer().style.filter = "grayscale(0.55) contrast(0.9) brightness(1.06)";
     m.removeLayer(m._dj.gu); m.removeLayer(m._dj.river); m.removeLayer(m._dj.labels);
   }
   const probe = new Image();
