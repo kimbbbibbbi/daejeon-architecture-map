@@ -31,7 +31,7 @@ python3 build.py
 
 ## 배포
 `index.html` 한 파일이면 됩니다. GitHub Pages(Settings → Pages → main 브랜치 / root)로 켜면
-OpenStreetMap 배경 지도가 회색조로 자동 표시됩니다.
+채도를 낮춘 OpenStreetMap 배경 지도가 자동 표시됩니다.
 
 ## 출처
 - 건축물 좌표 · 하천: © OpenStreetMap contributors (ODbL)

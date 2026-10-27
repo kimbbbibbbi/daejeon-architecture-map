@@ -497,13 +497,13 @@ window.RIVERS = /*RIVERS*/;
     if (tilesOk) addTiles(m);
     return m;
   }
-  // 직접 호스팅하면 OpenStreetMap 배경 타일을 회색조로 깔고, 외부 이미지가 막힌 곳에서는 자체 벡터 지도만 쓴다.
+  // 직접 호스팅하면 OpenStreetMap 배경 타일을 채도를 낮춰 깔고, 외부 이미지가 막힌 곳에서는 자체 벡터 지도만 쓴다.
   const TILE = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
   function addTiles(m) {
     if (m._dj.tiles) return;
     m._dj.tiles = L.tileLayer(TILE, { maxZoom: 19,
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(m);
-    m._dj.tiles.getContainer().style.filter = "grayscale(1) contrast(0.82) brightness(1.1)";
+    m._dj.tiles.getContainer().style.filter = "grayscale(0.55) contrast(0.9) brightness(1.06)";
     m.removeLayer(m._dj.gu); m.removeLayer(m._dj.river); m.removeLayer(m._dj.labels);
   }
   const probe = new Image();
