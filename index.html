@@ -1367,6 +1367,8 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
       localIdeographFontFamily: '"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif',
       attribution: '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' }).addTo(m);
     m.removeLayer(m._dj.gu); m.removeLayer(m._dj.river); m.removeLayer(m._dj.labels);
+    // 벡터 지도는 처음 그려질 때 크기를 잘못 잡는 경우가 있어 자리 잡은 뒤 다시 잰다
+    [300, 1000, 2500].forEach(t => setTimeout(() => refreshMap(m), t));
   }
   if (window.maplibregl && L.maplibreGL) {
     fetch(STYLE_URL).then(r => r.ok ? r.json() : Promise.reject(r.status))
@@ -1522,7 +1524,14 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
     document.documentElement.style.setProperty("--bar-bottom", bottom + "px");
     ["panel-map", "panel-route"].forEach(id => document.getElementById(id).style.setProperty("--panel-top", bottom + 12 + "px"));
   }
-  addEventListener("resize", () => { placePanels(); maps.forEach(m => m.invalidateSize()); });
+  // 숨겨져 있던 지도가 보이게 되면 Leaflet과 배경 벡터 지도 크기를 함께 다시 잰다
+  function refreshMap(m) {
+    m.invalidateSize();
+    const gl = m._dj.tiles;
+    const glMap = gl && gl.getMaplibreMap && gl.getMaplibreMap();
+    if (glMap) { glMap.resize(); gl._update && gl._update(); }
+  }
+  addEventListener("resize", () => { placePanels(); maps.forEach(refreshMap); });
 
   // ---------- 0. 인트로 ----------
   function renderIntro() {
@@ -1636,7 +1645,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
     document.body.style.overflow = "hidden";
     if (detailMap) { maps.splice(maps.indexOf(detailMap), 1); detailMap.remove(); }
     detailMap = baseMap("map-detail", { scrollWheelZoom: false });
-    detailMap.setView([b.lat, b.lng], 16);
+    detailMap.setView([b.lat, b.lng], 16); setTimeout(() => refreshMap(detailMap), 150);
     L.marker([b.lat, b.lng], { icon: pinIcon(), keyboard: false }).addTo(detailMap);
     document.getElementById("d-close").focus();
   }
@@ -1666,7 +1675,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
         .bindTooltip(cardHtml(b), { direction: "right", className: "hovercard", opacity: 1, offset: [14, 0] })
         .bindPopup(popupHtml(b), { maxWidth: 320 }))
     ]).addTo(routeMap);
-    routeMap.invalidateSize();
+    refreshMap(routeMap); [150, 800].forEach(t => setTimeout(() => refreshMap(routeMap), t));
     const top = document.getElementById("topbar").getBoundingClientRect().bottom + 24;
     routeMap.fitBounds(L.latLngBounds(pts), { ...(mobile() ? { paddingTopLeft: [30, top], paddingBottomRight: [30, 170] } : { paddingTopLeft: [440, top], paddingBottomRight: [60, 60] }), maxZoom: 16 });
   }
@@ -1694,7 +1703,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
     document.body.classList.toggle("doc-view", !["map", "routes"].includes(view));
     placePanels();
     if (view === "map") {
-      if (!mainMap) { placePanels(); initMainMap(); } else { placePanels(); mainMap.invalidateSize(); }
+      if (!mainMap) { placePanels(); initMainMap(); } else { placePanels(); refreshMap(mainMap); [150, 800].forEach(t => setTimeout(() => refreshMap(mainMap), t)); }
       if (pendingFocus) { const id = pendingFocus; pendingFocus = null; setTimeout(() => select(id, true), 80); }
     }
     if (view === "routes") { placePanels(); renderRoute(); }
