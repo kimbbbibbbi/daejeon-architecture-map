@@ -743,9 +743,9 @@ body.doc-view::before { content: ""; position: fixed; inset: 0 0 auto; height: v
   right: max(var(--gap), env(safe-area-inset-right, 0px));
   background: var(--white); border: 1px solid var(--ink);
 }
-.topbar-main { display: flex; align-items: center; gap: 28px; padding: 10px 16px; }
-.brand { font-family: var(--font-display); font-weight: 400; font-size: 26px; line-height: 1; letter-spacing: -0.01em; text-decoration: none; white-space: nowrap; }
-.menu { display: flex; gap: 22px; font-family: var(--font-display); font-size: 19px; overflow-x: auto; scrollbar-width: none; }
+.topbar-main { display: flex; align-items: center; gap: 28px; padding: 13px 18px; }
+.brand { font-family: var(--font-display); font-weight: 400; font-size: 32px; line-height: 1; letter-spacing: -0.01em; text-decoration: none; white-space: nowrap; }
+.menu { display: flex; gap: 28px; font-family: var(--font-display); font-size: 23px; overflow-x: auto; scrollbar-width: none; }
 .menu::-webkit-scrollbar { display: none; }
 .menu a { text-decoration: none; white-space: nowrap; color: var(--menu-idle); transition: color .15s ease; }
 .menu a:hover { color: var(--ink-3); }
@@ -754,8 +754,8 @@ body.doc-view::before { content: ""; position: fixed; inset: 0 0 auto; height: v
   margin-left: auto; display: flex; align-items: center; gap: 8px;
   border-bottom: 1px solid var(--ink); padding: 2px 2px 4px; min-width: 0; width: 240px;
 }
-.search input { border: 0; outline: none; background: transparent; flex: 1; min-width: 0; font-size: 14px; }
-.search input::placeholder { color: var(--ink-3); font-family: var(--font-display); font-size: 16px; }
+.search input { border: 0; outline: none; background: transparent; flex: 1; min-width: 0; font-size: 16px; }
+.search input::placeholder { color: var(--ink-3); font-family: var(--font-display); font-size: 19px; }
 .search svg { flex: none; }
 .topbar-filters {
   display: flex; gap: 22px; align-items: center; padding: 8px 16px;
@@ -1022,8 +1022,8 @@ dl.facts dt { font-weight: 700; }
   .steps { grid-template-columns: 1fr 1fr; }
   :root { --gap: 10px; }
   .topbar-main { flex-wrap: wrap; gap: 6px 16px; padding: 8px 12px; }
-  .brand { font-size: 22px; }
-  .menu { font-size: 16px; gap: 14px; order: 3; width: 100%; }
+  .brand { font-size: 25px; }
+  .menu { font-size: 18px; gap: 16px; order: 3; width: 100%; }
   .search { width: auto; flex: 1; margin-left: 8px; }
   .topbar-filters { padding: 6px 12px; gap: 14px; }
 
