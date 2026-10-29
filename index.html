@@ -958,8 +958,66 @@ dl.facts dt { font-weight: 700; }
 .pager a:last-child { text-align: right; }
 .pager span { display: block; font-family: var(--font-display); color: var(--ink-3); }
 
+/* ================= 인트로 ================= */
+.eyebrow { font-family: var(--font-display); font-size: 13px; letter-spacing: 0.14em; color: var(--ink-3); margin: 0; }
+.intro-hero {
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 40px; align-items: center;
+  padding-block: 20px 40px; border-bottom: 1px solid var(--ink);
+}
+.intro-hero h1 { font-weight: 700; font-size: clamp(30px, 4.2vw, 46px); line-height: 1.25; letter-spacing: -0.02em; margin: 12px 0 16px; }
+.lede { font-size: 16px; line-height: 1.75; max-width: 40ch; color: var(--ink-2); margin: 0; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px;
+  border: 1px solid var(--ink); text-decoration: none; font-size: 14px; font-weight: 500; background: var(--white);
+  transition: background .15s ease, color .15s ease;
+}
+.btn:hover { background: var(--soft-2); }
+.btn.primary { background: var(--black); border-color: var(--black); color: var(--white); }
+.btn.primary:hover { opacity: 0.88; }
+.intro-map { display: block; border: 1px solid var(--ink); background: var(--map-out); text-decoration: none; position: relative; }
+.intro-map svg { display: block; width: 100%; height: auto; }
+.intro-map .im-gu { fill: var(--map-land); stroke: var(--white); stroke-width: 1.5; }
+.intro-map .im-river { fill: none; stroke: var(--map-water); stroke-width: 2.5; stroke-linecap: round; }
+.intro-map .im-pin { fill: var(--pin); }
+.intro-map .im-label { font: 400 11px var(--font-display); fill: var(--ink-3); letter-spacing: 0.08em; }
+.intro-map .im-cap {
+  position: absolute; left: 10px; bottom: 10px; font-size: 12px; background: var(--white);
+  border: 1px solid var(--ink); padding: 3px 10px; color: var(--ink);
+}
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-bottom: 1px solid var(--ink); }
+.stats div { padding: 18px 0; display: grid; gap: 2px; }
+.stats div + div { padding-left: 20px; border-left: 1px solid var(--rule); }
+.stats b { font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.stats span { font-size: 12px; color: var(--ink-3); }
+.howto { padding-block: 44px 8px; }
+.howto h2 { font-family: var(--font-display); font-weight: 400; font-size: 26px; margin: 0 0 4px; }
+.steps { list-style: none; margin: 22px 0 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+.step { border-top: 1px solid var(--ink); padding-top: 12px; display: grid; gap: 10px; align-content: start; }
+.step .n { font-family: var(--font-display); font-size: 14px; color: var(--ink-3); }
+.step h3 { font-size: 16px; font-weight: 500; margin: 0; }
+.step p { margin: 0; font-size: 13px; color: var(--ink-2); line-height: 1.7; }
+.step a { font-size: 13px; }
+.vis {
+  height: 112px; background: var(--soft); border: 1px solid var(--rule);
+  display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; padding: 10px; pointer-events: none;
+}
+.vis .pin { width: 22px; height: 29px; }
+.mini-card { background: var(--white); box-shadow: var(--shadow); border-radius: 4px; padding: 6px 10px; font-size: 12px; line-height: 1.45; display: grid; }
+.mini-card span { color: var(--ink-3); }
+.mini-box { border: 1px solid var(--ink); background: var(--white); font-size: 11px; padding: 8px 10px; line-height: 1.6; }
+.vis svg.route-mini { width: 150px; height: 56px; }
+.route-mini circle { fill: var(--black); }
+.route-mini path { stroke: var(--ink); }
+.tip { margin: 28px 0 0; font-size: 13px; color: var(--ink-3); border-left: 2px solid var(--ink); padding-left: 10px; }
+
 /* ================= 반응형 ================= */
 @media (max-width: 860px) {
+  .intro-hero { grid-template-columns: 1fr; gap: 24px; padding-top: 8px; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .stats div:nth-child(3) { padding-left: 0; border-left: 0; }
+  .stats div:nth-child(n+3) { border-top: 1px solid var(--rule); }
+  .steps { grid-template-columns: 1fr 1fr; }
   :root { --gap: 10px; }
   .topbar-main { flex-wrap: wrap; gap: 6px 16px; padding: 8px 12px; }
   .brand { font-size: 22px; }
@@ -990,15 +1048,16 @@ dl.facts dt { font-weight: 700; }
   .hc .thumb { width: 72px; height: 72px; }
   .leaflet-popup-content { width: 270px !important; }
 }
+@media (max-width: 520px) { .steps { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
 </style>
 
 <!-- ===== 모든 화면 공통 상단 바 (메뉴 위치 고정) ===== -->
 <header class="topbar" id="topbar">
   <div class="topbar-main">
-    <a class="brand" href="#map">대전건축여지도</a>
+    <a class="brand" href="#intro">대전건축여지도</a>
     <nav class="menu" aria-label="주 메뉴">
-      <a href="#map" data-nav="map">Map</a><a href="#list" data-nav="list">List</a><a href="#routes" data-nav="routes">Route</a><a href="#about" data-nav="about">About</a><a href="#links" data-nav="links">Links</a>
+      <a href="#intro" data-nav="intro">Home</a><a href="#map" data-nav="map">Map</a><a href="#list" data-nav="list">List</a><a href="#routes" data-nav="routes">Route</a><a href="#about" data-nav="about">About</a><a href="#links" data-nav="links">Links</a>
     </nav>
     <label class="search">
       <input id="q" type="search" placeholder="Search" autocomplete="off" aria-label="건축물 이름, 주소 검색">
@@ -1008,7 +1067,66 @@ dl.facts dt { font-weight: 700; }
   <div class="topbar-filters" id="filters" hidden></div>
 </header>
 
-<!-- ===== 1. 지도 (홈) ===== -->
+<!-- ===== 0. 인트로 (첫 화면) ===== -->
+<section class="view frame" id="view-intro" hidden>
+  <div class="intro-hero">
+    <div>
+      <p class="eyebrow">DAEJEON ARCHITECTURE ATLAS</p>
+      <h1>대전의 건축자산을<br>지도 위에서 만나다</h1>
+      <p class="lede">대전에는 근현대 역사를 담은 우수건축자산 308건이 있습니다. 대전건축여지도는 이 건축물들의 위치와 이야기를 지도 한 장에 모으고, 직접 걸어 볼 수 있는 동선을 제안합니다.</p>
+      <div class="cta">
+        <a class="btn primary" href="#map">지도 열기 →</a>
+        <a class="btn" href="#routes">추천 동선 보기</a>
+        <a class="btn" href="#list">전체목록</a>
+      </div>
+    </div>
+    <a class="intro-map" href="#map" aria-label="지도 열기">
+      <svg id="intro-svg" role="img" aria-label="대전 5개 구와 건축자산 위치"></svg>
+      <span class="im-cap" id="intro-cap"></span>
+    </a>
+  </div>
+  <div class="stats" id="intro-stats"></div>
+  <section class="howto" aria-labelledby="howto-title">
+    <h2 id="howto-title">이렇게 둘러보세요</h2>
+    <p class="small">처음 오셨다면 아래 순서대로 따라 해 보세요.</p>
+    <ol class="steps">
+      <li class="step">
+        <span class="n">STEP 1</span>
+        <div class="vis" aria-hidden="true"><div class="pin" data-pin></div><div class="mini-card"><b>옛 충남도청사</b><span>중구 · 1932 · 관공서</span></div></div>
+        <h3>지도에서 찾기</h3>
+        <p>Map 화면의 핀에 마우스를 올리면 미리보기 카드가 뜨고, 누르면 상세보기 버튼이 나옵니다. 숫자 원은 가까이 모인 건축물 묶음이에요. 누르면 확대됩니다.</p>
+        <a class="u" href="#map">지도 열기</a>
+      </li>
+      <li class="step">
+        <span class="n">STEP 2</span>
+        <div class="vis" aria-hidden="true"><span class="chip" aria-pressed="true">중구</span><span class="chip">일제강점기</span><span class="chip">주거</span><span class="chip">Search</span></div>
+        <h3>골라 보기</h3>
+        <p>지도 위쪽의 District(구) · Era(시대) · Type(용도) 버튼으로 원하는 건축물만 남길 수 있어요. 검색창에 이름이나 주소를 입력해도 됩니다.</p>
+        <a class="u" href="#map">필터 써 보기</a>
+      </li>
+      <li class="step">
+        <span class="n">STEP 3</span>
+        <div class="vis" aria-hidden="true"><div class="mini-box">일제강점기 · 관공서<br><b>옛 충남도청사</b><br>준공 1932 · 중구 중앙로 101</div></div>
+        <h3>자세히 보기</h3>
+        <p>상세 창에서 준공 연도, 주소, 시대, 용도와 건축물 이야기를 볼 수 있어요. 아래 작은 지도로 주변 위치도 확인할 수 있습니다.</p>
+        <a class="u" href="#b01">예시 보기</a>
+      </li>
+      <li class="step">
+        <span class="n">STEP 4</span>
+        <div class="vis" aria-hidden="true">
+          <svg class="route-mini" viewBox="0 0 150 56"><path d="M18 40 L60 18 L100 34 L134 14" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/><g font-family="Jost, sans-serif" font-size="11" text-anchor="middle"><circle cx="18" cy="40" r="10"/><text x="18" y="44" fill="#fff">1</text><circle cx="60" cy="18" r="10"/><text x="60" y="22" fill="#fff">2</text><circle cx="100" cy="34" r="10"/><text x="100" y="38" fill="#fff">3</text><circle cx="134" cy="14" r="10"/><text x="134" y="18" fill="#fff">4</text></g></svg>
+        </div>
+        <h3>따라 걷기</h3>
+        <p>Route 화면에서 원도심 · 둔산 · 동부 세 가지 동선을 고르면, 들를 곳이 번호 순서대로 지도에 이어져 나타나요.</p>
+        <a class="u" href="#routes">동선 보기</a>
+      </li>
+    </ol>
+    <p class="tip">휴대폰에서는 지도 아래 목록 손잡이를 위로 끌어 올리면 전체 목록이 펼쳐집니다.</p>
+  </section>
+  <div data-slot="footer"></div>
+</section>
+
+<!-- ===== 1. 지도 ===== -->
 <section class="view mapview" id="view-map">
   <div class="map" id="map-main" role="region" aria-label="대전 건축자산 지도"></div>
   <aside class="panel" id="panel-map" aria-label="건축자산 목록">
@@ -1378,6 +1496,40 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
   }
   addEventListener("resize", () => { placePanels(); maps.forEach(m => m.invalidateSize()); });
 
+  // ---------- 0. 인트로 ----------
+  function renderIntro() {
+    document.querySelectorAll("[data-pin]").forEach(el => el.innerHTML = PIN_SVG);
+    const years = B.map(b => b.year).filter(Boolean);
+    const gus = new Set(B.map(b => b.gu)).size;
+    document.getElementById("intro-stats").innerHTML = [
+      [B.length, "샘플 건축자산 · 308건 반영 예정"], [gus, "자치구"], [R.length, "추천 동선"],
+      [`${Math.min(...years)}–${Math.max(...years)}`, "건립 연도 범위"]
+    ].map(([n, t]) => `<div><b>${n}</b><span>${t}</span></div>`).join("");
+    document.getElementById("intro-cap").textContent = `대전 5개 구 · 건축자산 ${B.length}곳 →`;
+    // 구 경계 · 하천 · 건축물 위치를 간단한 SVG 지도로 그린다
+    const all = window.DISTRICTS.features.flatMap(f => (f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates).flat(1)).flat(1);
+    const lons = all.map(c => c[0]), lats = all.map(c => c[1]);
+    const [x0, x1, y0, y1] = [Math.min(...lons), Math.max(...lons), Math.min(...lats), Math.max(...lats)];
+    const kx = Math.cos((y0 + y1) / 2 * Math.PI / 180), W = 420, pad = 14;
+    const sc = (W - pad * 2) / ((x1 - x0) * kx), H = Math.round((y1 - y0) * sc + pad * 2);
+    const P = ([lon, lat]) => `${((lon - x0) * kx * sc + pad).toFixed(1)},${((y1 - lat) * sc + pad).toFixed(1)}`;
+    const ring = r => "M" + r.map(P).join("L") + "Z";
+    let svg = window.DISTRICTS.features.map(f => {
+      const polys = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
+      return `<path class="im-gu" d="${polys.map(p => p.map(ring).join("")).join("")}"/>`;
+    }).join("");
+    svg += window.RIVERS.features.map(f => `<path class="im-river" d="M${f.geometry.coordinates.map(P).join("L")}"/>`).join("");
+    svg += window.DISTRICTS.features.map(f => {
+      const c = L.geoJSON(f).getBounds().getCenter(), [x, y] = P([c.lng, c.lat]).split(",");
+      return `<text class="im-label" x="${x}" y="${y}" text-anchor="middle">${f.properties.name}</text>`;
+    }).join("");
+    svg += B.map(b => { const [x, y] = P([b.lng, b.lat]).split(",").map(Number);
+      return `<path class="im-pin" transform="translate(${(x - 6.5).toFixed(1)},${(y - 17).toFixed(1)}) scale(0.5)" d="M13 0C5.8 0 0 5.6 0 12.6 0 22 13 34 13 34s13-12 13-21.4C26 5.6 20.2 0 13 0z"><title>${esc(b.name)}</title></path>`; }).join("");
+    const el = document.getElementById("intro-svg");
+    el.setAttribute("viewBox", `0 0 ${W} ${H}`);
+    el.innerHTML = svg;
+  }
+
   // ---------- 2. 전체목록 ----------
   const fill = (id, vals) => document.getElementById(id).innerHTML = '<option value="">전체</option>' + vals.map(v => `<option>${esc(v)}</option>`).join("");
   fill("lgu", GU); fill("lera", ERA); fill("luse", USE);
@@ -1413,7 +1565,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
     const routes = R.filter(r => r.stops.includes(id));
     detailEl.innerHTML = `
       <div class="frame">
-        <div class="detail-bar"><a href="#${lastView}" class="u">← ${{ map: "Map", list: "List", routes: "Route", about: "About", links: "Links" }[lastView]}</a><button type="button" id="d-close" aria-label="닫기">Close ✕</button></div>
+        <div class="detail-bar"><a href="#${lastView}" class="u">← ${{ intro: "Home", map: "Map", list: "List", routes: "Route", about: "About", links: "Links" }[lastView]}</a><button type="button" id="d-close" aria-label="닫기">Close ✕</button></div>
         <div class="d-grid">
           <div>
             <p class="d-cat"><span class="k">${esc(b.era)} · ${esc(b.use)}</span><br><span id="d-title" style="font-size:17px">${esc(b.name)}</span>${b.alt ? `<br>${esc(b.alt)}` : ""}</p>
@@ -1501,7 +1653,8 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
   });
 
   // ---------- 라우팅 ----------
-  const VIEWS = ["map", "list", "routes", "about", "links"];
+  let introDone = false;
+  const VIEWS = ["intro", "map", "list", "routes", "about", "links"];
   function syncNav(key) {
     document.querySelectorAll("[data-nav]").forEach(a => {
       if (a.dataset.nav === key) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
@@ -1518,10 +1671,11 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
     }
     if (view === "routes") { placePanels(); renderRoute(); }
     if (view === "list") renderTable();
+    if (view === "intro" && !introDone) { renderIntro(); introDone = true; }
     if (!["map", "routes"].includes(view)) scrollTo(0, 0);
   }
   function route() {
-    const h = location.hash.slice(1) || "map";
+    const h = location.hash.slice(1) || "intro";
     if (byId[h]) {
       if (document.querySelector(".view:not([hidden])") == null) show(lastView);
       openDetail(h); syncNav(lastView === "list" ? "list" : lastView); return;
@@ -1530,7 +1684,7 @@ window.RIVERS = {"type":"FeatureCollection","features":[{"type":"Feature","prope
     let view = h;
     if (ERA_HASH[h]) { view = "list"; lera.value = ERA_HASH[h]; }
     else if (h === "list") lera.value = "";
-    if (!VIEWS.includes(view)) view = "map";
+    if (!VIEWS.includes(view)) view = "intro";
     lastView = view;
     syncNav(view);
     show(view);
