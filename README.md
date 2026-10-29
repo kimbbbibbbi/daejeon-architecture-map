@@ -20,7 +20,7 @@ UI는 오픈하우스서울(ohseoul.org) 지도 페이지를 참고했습니다.
 | `data.js` | 건축물 · 동선 데이터 (엑셀 반영 시 이 파일만 교체) |
 | `districts.json` | 대전 5개 구 경계 (통계청 2013, southkorea-maps 가공) |
 | `rivers.json` | 갑천 · 유등천 · 대전천 (© OpenStreetMap contributors) |
-| `leaflet.css`, `mc_MarkerCluster.css` | 지도 라이브러리 스타일 |
+| `leaflet.css`, `mc_MarkerCluster.css`, `maplibre-gl.css` | 지도 라이브러리 스타일 |
 | `build.py` | 위 파일을 합쳐 `index.html` 한 파일로 만듦 |
 | `index.html` | 빌드 결과물 (바로 열어 볼 수 있음) |
 
@@ -31,12 +31,12 @@ python3 build.py
 
 ## 배포
 `index.html` 한 파일이면 됩니다. GitHub Pages(Settings → Pages → main 브랜치 / root)로 켜면
-채도를 낮춘 OpenStreetMap 배경 지도가 자동 표시됩니다.
+OpenFreeMap 배경 지도(가게·건물 이름 표시)가 자동으로 나옵니다.
 
 ## 출처
 - 건축물 좌표 · 하천: © OpenStreetMap contributors (ODbL)
 - 행정구역 경계: 통계청, southkorea-maps
-- 배경 지도: © OpenStreetMap contributors
-- 라이브러리: Leaflet, Leaflet.markercluster
+- 배경 지도: OpenFreeMap © OpenMapTiles, Data from OpenStreetMap
+- 라이브러리: Leaflet, Leaflet.markercluster, MapLibre GL, maplibre-gl-leaflet
 
 기획 · 제작: 서광일 · 디지털인문학 프로젝트

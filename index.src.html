@@ -6,6 +6,7 @@
 <style>
 /*LEAFLET_CSS*/
 /*CLUSTER_CSS*/
+/*MAPLIBRE_CSS*/
 </style>
 <style>
 /* Layout: 지도·동선 = 전체 화면 지도 위에 떠 있는 상단 바 + 좌측 패널(모바일은 바텀시트).
@@ -52,7 +53,6 @@ button, input, select { font: inherit; color: inherit; }
 /* 문서 화면에서는 상단 바 위·옆 틈으로 본문이 비치지 않게 흰 띠를 깐다 */
 body.doc-view::before { content: ""; position: fixed; inset: 0 0 auto; height: var(--bar-bottom, 90px); background: var(--white); z-index: 1250; }
 .leaflet-container { background: var(--map-out); font-family: var(--font-body); }
-.basemap { filter: sepia(0.25) saturate(0.55) brightness(1.04); }
 .topbar {
   position: fixed; z-index: 1300;
   top: calc(var(--gap) + env(safe-area-inset-top, 0px));
@@ -472,7 +472,7 @@ dl.facts dt { font-weight: 700; }
   <footer class="site">
     <div>문의: 대전건축여지도 제작팀<br>건축자산 정보 정정 요청은 소개 페이지의 출처 기관으로 문의해 주세요.<br><br>© 대전건축여지도</div>
     <div>대전건축여지도<br>기획 · 제작: 서광일<br>디지털인문학 프로젝트</div>
-    <div>데이터: 대전광역시 근현대 건축문화유산 전수조사<br>지도: OpenStreetMap · Leaflet<br>사진: 국가유산포털 · 공공누리</div>
+    <div>데이터: 대전광역시 근현대 건축문화유산 전수조사<br>지도: OpenFreeMap · OpenStreetMap<br>사진: 국가유산포털 · 공공누리</div>
   </footer>
 </template>
 
@@ -516,7 +516,8 @@ dl.facts dt { font-weight: 700; }
       <div><b>사진 · 역사 개요</b><span>국가유산포털(heritage.go.kr), 공공누리 개방 저작물 (반영 예정)</span></div>
       <div><b>건축물 좌표 · 하천</b><span>© OpenStreetMap contributors (ODbL)</span></div>
       <div><b>행정구역 경계</b><span>통계청 2013 행정구역 경계, southkorea-maps 가공본</span></div>
-      <div><b>지도 라이브러리</b><span>Leaflet, Leaflet.markercluster</span></div>
+      <div><b>배경 지도</b><span>OpenFreeMap © OpenMapTiles, Data from OpenStreetMap</span></div>
+      <div><b>지도 라이브러리</b><span>Leaflet, Leaflet.markercluster, MapLibre GL</span></div>
     </div>
   </div>
   <div data-slot="footer"></div>
@@ -543,6 +544,8 @@ dl.facts dt { font-weight: 700; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.js"></script>
+<script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.1.4/leaflet-maplibre-gl.js"></script>
 <script>
 /*DATA*/
 window.DISTRICTS = /*DISTRICTS*/;
@@ -587,18 +590,41 @@ window.RIVERS = /*RIVERS*/;
     if (tilesOk) addTiles(m);
     return m;
   }
-  // 직접 호스팅하면 OpenStreetMap 배경 타일을 채도를 낮춰 깔고, 외부 이미지가 막힌 곳에서는 자체 벡터 지도만 쓴다.
-  const TILE = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+  // 직접 호스팅하면 OpenFreeMap 벡터 지도(아이콘 없이 가게 · 건물 이름만)를 깔고,
+  // 외부 지도를 불러올 수 없는 곳(Claude 공유 링크 등)에서는 자체 벡터 지도만 쓴다.
+  const STYLE_URL = "https://tiles.openfreemap.org/styles/positron";
+  const KO = ["coalesce", ["get", "name:ko"], ["get", "name:nonlatin"], ["get", "name"]];
+  let basemapStyle = null;
+  function tuneStyle(st) {
+    const paint = { water: { "fill-color": "#cddde7" }, waterway: { "line-color": "#b9cfdc" },
+      park: { "fill-color": "#e2eadc" }, landcover_wood: { "fill-color": "#dae4d4" } };
+    st.layers.forEach(l => {
+      if (paint[l.id]) Object.assign(l.paint, paint[l.id]);
+      // 지명 · 도로명 · 물 이름은 한국어 우선
+      const tf = l.layout && l.layout["text-field"];
+      if (l.type === "symbol" && tf && !/shield/.test(l.id) && JSON.stringify(tf).includes("name")) l.layout["text-field"] = KO;
+    });
+    // 가게 · 건물 이름: 아이콘 없이 작은 글씨로, 확대했을 때만
+    const poi = { id: "poi_names", type: "symbol", source: "openmaptiles", "source-layer": "poi", minzoom: 15,
+      filter: ["all", ["match", ["geometry-type"], ["Point", "MultiPoint"], true, false], ["has", "name"]],
+      layout: { "text-field": KO, "text-font": ["Noto Sans Regular"], "text-size": 11, "text-max-width": 7, "symbol-sort-key": ["get", "rank"] },
+      paint: { "text-color": "#6f6a64", "text-halo-color": "#ffffff", "text-halo-width": 1.2 } };
+    const at = st.layers.findIndex(l => l.id === "label_other");
+    st.layers.splice(at < 0 ? st.layers.length : at, 0, poi);
+    return st;
+  }
   function addTiles(m) {
-    if (m._dj.tiles) return;
-    // 지도에 아직 위치가 없으면 타일 컨테이너가 늦게 생기므로 필터는 className + CSS로 건다
-    m._dj.tiles = L.tileLayer(TILE, { maxZoom: 19, className: "basemap",
-      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(m);
+    if (m._dj.tiles || !basemapStyle) return;
+    m._dj.tiles = L.maplibreGL({ style: basemapStyle, interactive: false,
+      localIdeographFontFamily: '"Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif',
+      attribution: '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>' }).addTo(m);
     m.removeLayer(m._dj.gu); m.removeLayer(m._dj.river); m.removeLayer(m._dj.labels);
   }
-  const probe = new Image();
-  probe.onload = () => { tilesOk = true; maps.forEach(addTiles); };
-  probe.src = "https://tile.openstreetmap.org/11/1747/797.png";
+  if (window.maplibregl && L.maplibreGL) {
+    fetch(STYLE_URL).then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(st => { basemapStyle = tuneStyle(st); tilesOk = true; maps.forEach(addTiles); })
+      .catch(() => {});
+  }
 
   const PIN_SVG = '<svg viewBox="0 0 26 34" aria-hidden="true"><path d="M13 0C5.8 0 0 5.6 0 12.6 0 22 13 34 13 34s13-12 13-21.4C26 5.6 20.2 0 13 0z"/><circle cx="13" cy="12.5" r="4" fill="#fff"/></svg>';
   const pinIcon = () => L.divIcon({ className: "", html: `<div class="pin">${PIN_SVG}</div>`, iconSize: [26, 34], iconAnchor: [13, 34], tooltipAnchor: [14, -22], popupAnchor: [0, -34] });
